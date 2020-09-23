@@ -10,6 +10,7 @@ import argparse
 import logging
 import os
 import sys
+import pickle
 from sklearn.externals.joblib import parallel_backend
 from sklearn.externals.joblib import register_parallel_backend
 from sklearn.externals.joblib import cpu_count
@@ -19,8 +20,6 @@ from ipyparallel.joblib import IPythonParallelBackend
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from sklearn.metrics import plot_roc_curve
-import matplotlib.pyplot as plt
 
 from sklearn.metrics import make_scorer
 from sklearn.metrics import accuracy_score
@@ -29,18 +28,24 @@ from sklearn.metrics import roc_curve
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(FILE_DIR)
+
 
 #prepare the logger
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", help="Input file path")
+parser.add_argument("-o", "--outfolder", help="Output folder path")
 parser.add_argument("-p", "--profile", default="ipy_profile",
                  help="Name of IPython profile to use")
 args = parser.parse_args()
+loc=os.path.join(args.outfolder,"results")
+
+os.mkdir( loc );
+
+FILE_DIR = os.path.dirname(os.path.abspath(loc))
+sys.path.append(FILE_DIR)
 
 profile = args.profile
-logging.basicConfig(filename=os.path.join(FILE_DIR,profile+'.log'),
+logging.basicConfig(filename=os.path.join(FILE_DIR,'SVC_gs.log'),
                     filemode='w',
                     level=logging.DEBUG)
 logging.info("number of CPUs found: {0}".format(cpu_count()))
@@ -70,7 +75,7 @@ param_grid = [
    'shrinking':[True,False],
    'class_weight':['balanced',None]},
  ]
-
+logging.info("Grid search parameters: {0}:".format(param_grid))
 # The scorers can be either be one of the predefined metric strings or a scorer
 # callable, like the one returned by make_scorer
 scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
@@ -95,12 +100,15 @@ with parallel_backend('ipyparallel'):
 # extract results
 results = gs.cv_results_
 results = pd.DataFrame(results)
-results.to_csv(os.path.join(FILE_DIR,'scores_rbf_digits.csv'))
+results.to_csv(os.path.join(FILE_DIR,'scores_opt_SVC.csv'))
 
-info = "Best estimator: " + str(gs.best_estimator_) + "\navg. AUC score using Cross Validation (10): " + str(gs.best_score_)
+logging.info("Best estimator: {0}".format(gs.best_estimator_))
+logging.info("navg. AUC score using Cross Validation (10): {0}".format(gs.best_score_))
 
 y_predict = gs.best_estimator_.predict(X_test)
 fpr, tpr, thresholds = roc_curve(y_test, y_predict)
-info = "\n AUC with the test data: "+ str(auc(fpr, tpr))
+logging.info("AUC with the test data: ".format(auc(fpr, tpr)))
 
-
+with open(os.path.join(FILE_DIR,'opt_SVC.pickle'),'wb') as modelFile:
+    pickle.dump(gs.best_estimator_,modelFile)
+logging.info("process done.")
