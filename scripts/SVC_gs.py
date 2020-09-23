@@ -11,9 +11,9 @@ import logging
 import os
 import sys
 import pickle
-from sklearn.externals.joblib import parallel_backend
-from sklearn.externals.joblib import register_parallel_backend
-from sklearn.externals.joblib import cpu_count
+from joblib import parallel_backend
+from joblib import register_parallel_backend
+from joblib import cpu_count
 from ipyparallel import Client
 from ipyparallel.joblib import IPythonParallelBackend
 
