@@ -88,7 +88,7 @@ gs = GridSearchCV(SVC(random_state=42),
                   param_grid=param_grid,
                   scoring=scoring, refit='AUC', 
                   return_train_score=True,
-                  cv=10,
+                  cv=5,
                    n_jobs=len(c))
 X = inputT.loc[:,"ARACNE_score":"irp_score"]
 y = inputT["Link"]
