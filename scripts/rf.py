@@ -72,7 +72,7 @@ inputT = pd.read_csv(args.input,sep=",",keep_default_na=False)
 
 #Parameters to test in parallel
 param_grid = [
-  {'n_estimators': [10,100, 1000,10000,100000, 1000000], 
+  {'n_estimators': [10,100, 1000,10000], 
    'criterion': ['gini','entropy'],
    'bootstrap': [True, False],
    'max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
