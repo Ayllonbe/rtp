@@ -72,7 +72,7 @@ inputT = pd.read_csv(args.input,sep=",",keep_default_na=False)
 
 #Parameters to test in parallel
 param_grid = [
-  {'n_estimators': [10, 10, 100, 1000,10000,100000, 1000000], 
+  {'n_estimators': [10,100, 1000,10000,100000, 1000000], 
    'criterion': ['gini','entropy'],
    'max_depth': [None, 2,4,5,8,10],
    'max_features': ['sqrt', 'log2'],
@@ -92,7 +92,7 @@ gs = GridSearchCV(RandomForestClassifier(random_state=42),
                   scoring=scoring, refit='AUC', 
                   return_train_score=True,
                   cv=5,
-                   n_jobs=len(c))
+                  n_jobs=len(c))
 X = inputT.loc[:,"ARACNE_score":"irp_score"]
 y = inputT["Link"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
