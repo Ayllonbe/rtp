@@ -74,7 +74,10 @@ inputT = pd.read_csv(args.input,sep=",",keep_default_na=False)
 param_grid = [
   {'n_estimators': [10,100, 1000,10000,100000, 1000000], 
    'criterion': ['gini','entropy'],
-   'max_depth': [None, 2,4,5,8,10],
+   'bootstrap': [True, False],
+   'max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
+   'min_samples_leaf': [1, 2, 4],
+   'min_samples_split': [2, 5, 10],
    'max_features': ['sqrt', 'log2'],
    'class_weight':['balanced',None]},
  ]
