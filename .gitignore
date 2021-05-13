@@ -1,1 +1,3 @@
-
+data/rtp_project_data/*protein.actions*
+data/rtp_project_data/*network*
+scripts/ToServerAnalysis/DataToRunTPOT/*to_SK*
