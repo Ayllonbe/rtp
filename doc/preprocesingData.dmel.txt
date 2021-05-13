@@ -1,0 +1,42 @@
+# MICRO server
+
+
+When I access in the server, I found me in /mnt/picea/home/aabenitez. First, I
+access to my data folder and link the Seidr network file. Then, with seidr tool, I transform it 
+in a txt file to be exported outside of the server.
+
+> cd Git/data/
+> mkdir drosophila
+> cd drosophila
+> ln -s  ln -s  /mnt/picea/projects/seidr/networks/dmel/results/aggregate/irp.bb.1.28.sf .
+> module load bioinfo-tools
+> module load seidr-devel
+> seidr view -c irp.bb.1.28.sf > dmel_network.tsv
+> exit
+
+# LOCALHOST
+
+First, I retrieve the files I need to my preprocessing analysis: The Seidr network in a txt format and the 
+STRING file including the PPI with meaning links.
+
+> scp micro:~/Git/data/drosophila/dmel_network.tsv .
+> wget https://stringdb-static.org/download/protein.actions.v11.0/7227.protein.actions.v11.0.txt.gz
+
+Then the ids for the STRING file represent proteins while the ids for the Seidr networks are genes. Therefore, we 
+need to transform the protein id into gene id by using the mapping file downloaded from UniPROT:
+
+> wget https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/DROME_7227_idmapping.dat.gz 
+
+# RSTUDIO
+
+There is a created R file called TransformingStringToEnsemble.R. This file have several steps:
+
+1. To read DROME_7227_idmapping.dat.gz and create the STRING id 2 Ensemble id mapping.
+2. To combine the created mapping with the STRING network with protein actions.
+4. To transform the From and To columns as ensemble id
+5. To export the new STRING network with the gene ids as dmel.protein.actions.v11.0.txt
+
+# Python
+
+There is a Python file called dmel-preprocessing.py that preprocess two files: dmel_network.tsv and 
+dmel.protein.actions.v11.0.txt to generate a unique

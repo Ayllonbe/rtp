@@ -1,0 +1,50 @@
+
+STRING only includes the PPI with annotated link of Populus trichocarpa. However, here we mostly use Populus
+tremula. For that reason, we need to preprocess the results using the orthology between those close organisms.
+
+
+# MICRO server
+
+
+When I access in the server, I found me in /mnt/picea/home/aabenitez. First, I
+access to my data folder and link the Seidr network file. Then, with seidr tool, I transform it 
+in a txt file to be exported outside of the server.
+
+> cd Git/data/
+> mkdir potrav
+> cd potrav
+> ln -s /mnt/picea/projects/aspseq/nstreet/v2/network/full/results/aggregated.bb.sf .
+> module load bioinfo-tools
+> module load seidr-devel
+> seidr view -c aggregated.bb.sf > potra_network.tsv
+> exit
+
+# LOCALHOST
+
+First, I retrieve the files I need to my preprocessing analysis: The Seidr network in a txt format and the 
+STRING file including the PPI with meaning links.
+
+> scp micro:~/Git/data/potrav/potra_network.tsv .
+> wget https://stringdb-static.org/download/protein.actions.v11.0/3694.protein.actions.v11.0.txt.gz
+> mv 3694.protein.actions.v11.0.txt.gz potri.protein.actions.v11.0.txt.gz
+
+Due to the fact that we are working with Populus tremula, we need to download the files to changes the potri 
+links with the orthologues potra. Also, STRING file, only have the potri ids related with the V2 assembling,
+therefore the mapping of the version 2 and version 3 is also need.
+
+> wget ftp://plantgenie.org/Data/PopGenIE/Populus_tremula/v2.2/annotation/best_diamond/potra_potri_BEST_DIAMOND_out.tsv.gz
+> wget ftp://plantgenie.org/Data/PopGenIE/Populus_trichocarpa/v3.0/v10.1/Annotation/id_conversion/potri_v3_v2.txt
+
+## RSTUDIO
+
+There is a created R file called stringTransPotriToPotra.R. This file have few steps:
+
+1. To combine potra_potri_BEST_DIAMOND_out.tsv.gz and potri_v3_v2.txt to access from v2 potri to v3 potra.
+2. To combine new mapping with potri.protein.actions.v11.0.txt.gz.
+4. To transform the From and To columns as potra gene id
+5. To export the new STRING network with the gene ids as potra.protein.actions.v11.0.txt
+
+# Python
+
+There is a Python file called potra-preprocessing.py that preprocess two files: potra_network.tsv and 
+potra.protein.actions.v11.0.txt to generate a unique file combining their content.

@@ -1,0 +1,29 @@
+# MICRO server
+
+
+When I access in the server, I found me in /mnt/picea/home/aabenitez. First, I
+access to my data folder and link the Seidr network file. Then, with seidr tool, I transform it 
+in a txt file to be exported outside of the server.
+
+> cd Git/data/
+> mkdir arabidopsis
+> cd arabidopsis
+> ln -s   /mnt/picea/projects/seidr/networks/athal/results/aggregate/irp.bb.1.28.sf .
+> module load bioinfo-tools
+> module load seidr-devel
+> seidr view -c irp.bb.1.28.sf > athal_network.tsv
+> exit
+
+# LOCALHOST
+
+First, I retrieve the files I need to my preprocessing analysis: The Seidr network in a txt format and the 
+STRING file including the PPI with meaning links.
+
+> scp micro:~/Git/data/arabidopsis/athal_network.tsv .
+> wget https://stringdb-static.org/download/protein.actions.v11.0/3702.protein.actions.v11.0.txt.gz
+> mv 3702.protein.actions.v11.0.txt.gz athal.protein.actions.v11.0.txt.gz
+
+# Python
+
+There is a Python file called athal-preprocessing.py that preprocess two files: athal_network.tsv and 
+athal.protein.actions.v11.0.txt to generate a unique file combining their content.
