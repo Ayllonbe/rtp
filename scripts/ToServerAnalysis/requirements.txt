@@ -14,7 +14,7 @@ mkl-random==1.0.4
 mkl-service==2.3.0
 numpy @ file:///tmp/build/80754af9/numpy_and_numpy_base_1603479632437/work
 pandas==1.2.2
-Pillow==8.3.2
+Pillow==9.0.0
 pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
 pyparsing==2.4.7
 python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
